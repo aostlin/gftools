@@ -13,6 +13,9 @@ __pycache__/
 # C extensions
 *.so
 
+# read the docs (only online)
+envs/
+
 # Distribution / packaging
 .Python
 build/
