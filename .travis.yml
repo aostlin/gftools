@@ -16,9 +16,11 @@ script:
   - find gftools -name '*.py' -not -path '*/tests/*' -not -path '*.ropeproject*' -not -name _version.py -exec pyflakes {} +
   - travis-sphinx build
   - sphinx-build -b doctest -d docs/build/doctrees   docs/source docs/build/doctest
+  - git status
 after_success:
   - codecov
   - travis-sphinx deploy --branches=master,develop
+  - git status
 notifications:
   email:
     on_success: never
