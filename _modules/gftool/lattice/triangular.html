@@ -1,0 +1,368 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>gftool.lattice.triangular &mdash; Gftool 0+untagged.12.g7aa3133 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/toggleprompt.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Gftool
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0+untagged.12.g7aa3133
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../generated/gftool.html">gftool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../generated/gftool.fourier.html">gftool.fourier</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../generated/gftool.lattice.html">gftool.lattice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../generated/gftool.matrix.html">gftool.matrix</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../generated/gftool.pade.html">gftool.pade</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../generated/gftool.siam.html">gftool.siam</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Help</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../whats-new.html">What’s New</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Gftool</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../../gftool.html">gftool</a> &raquo;</li>
+        
+      <li>gftool.lattice.triangular</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for gftool.lattice.triangular</h1><div class="highlight"><pre>
+<span></span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;2D triangular lattice.</span>
+
+<span class="sd">The dispersion of the 2D triangular lattice is given by</span>
+
+<span class="sd">.. math:: ϵ_{k_x, k_y} = t [\cos(2k_x) + 2 \cos(k_x)\cos(k_y)]</span>
+
+<span class="sd">which takes values :math:`ϵ_{k_x, k_y} ∈ [-1.5t, 3t] = [-2D/3, 4D/3]`.</span>
+
+<span class="sd">:half_bandwidth: The half-bandwidth `D` corresponds to a nearest neighbor hopping</span>
+<span class="sd">                 of `t=4D/9`.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">ellipk</span>
+
+<span class="kn">from</span> <span class="nn">gftool._util</span> <span class="kn">import</span> <span class="n">_u_ellipk</span>
+
+
+<span class="k">def</span> <span class="nf">_signed_sqrt</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Square root with correct sign for triangular lattice.&quot;&quot;&quot;</span>
+    <span class="n">sign</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">z</span><span class="o">.</span><span class="n">real</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">imag</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sign</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">scimath</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="gf_z"><a class="viewcode-back" href="../../../generated/gftool.lattice.triangular.gf_z.html#gftool.lattice.triangular.gf_z">[docs]</a><span class="k">def</span> <span class="nf">gf_z</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">half_bandwidth</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Local Green&#39;s function of the 2D triangular lattice.</span>
+
+<span class="sd">    Note, that the spectrum is asymmetric and in :math:`[-2D/3, 4D/3]`,</span>
+<span class="sd">    where :math:`D` is the half-bandwidth.</span>
+<span class="sd">    The Green&#39;s function is evaluated as complete elliptic integral of first</span>
+<span class="sd">    kind, see [horiguchi1972]_.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    z : complex np.ndarray or complex</span>
+<span class="sd">        Green&#39;s function is evaluated at complex frequency `z`.</span>
+<span class="sd">    half_bandwidth : float</span>
+<span class="sd">        Half-bandwidth of the DOS of the triangular lattice.</span>
+<span class="sd">        The `half_bandwidth` corresponds to the nearest neighbor hopping</span>
+<span class="sd">        :math:`t=4D/9`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    gf_z : complex np.ndarray or complex</span>
+<span class="sd">        Value of the triangular lattice Green&#39;s function</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [horiguchi1972] Horiguchi, T., 1972. Lattice Green’s Functions for the</span>
+<span class="sd">       Triangular and Honeycomb Lattices. Journal of Mathematical Physics 13,</span>
+<span class="sd">       1411–1419. https://doi.org/10.1063/1.1666155</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; ww = np.linspace(-1.5, 1.5, num=500, dtype=complex) + 1e-64j</span>
+<span class="sd">    &gt;&gt;&gt; gf_ww = gt.lattice.triangular.gf_z(ww, half_bandwidth=1)</span>
+
+<span class="sd">    &gt;&gt;&gt; import matplotlib.pyplot as plt</span>
+<span class="sd">    &gt;&gt;&gt; _ = plt.axhline(0, color=&#39;black&#39;, linewidth=0.8)</span>
+<span class="sd">    &gt;&gt;&gt; _ = plt.axvline(-2/3, color=&#39;black&#39;, linewidth=0.8)</span>
+<span class="sd">    &gt;&gt;&gt; _ = plt.axvline(+4/3, color=&#39;black&#39;, linewidth=0.8)</span>
+<span class="sd">    &gt;&gt;&gt; _ = plt.plot(ww.real, gf_ww.real, label=r&quot;$\Re G$&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; _ = plt.plot(ww.real, gf_ww.imag, &#39;--&#39;, label=r&quot;$\Im G$&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; _ = plt.ylabel(r&quot;$G*D$&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; _ = plt.xlabel(r&quot;$\omega/D$&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; _ = plt.xlim(left=ww.real.min(), right=ww.real.max())</span>
+<span class="sd">    &gt;&gt;&gt; _ = plt.legend()</span>
+<span class="sd">    &gt;&gt;&gt; plt.show()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">half_bandwidth</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">/</span> <span class="mi">9</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">D</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">advanced</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">imag</span> <span class="o">&lt;</span> <span class="mi">0</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">advanced</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">z</span><span class="p">),</span> <span class="n">z</span><span class="p">)</span>  <span class="c1"># calculate retarded only, and use symmetry</span>
+    <span class="n">singular</span> <span class="o">=</span> <span class="n">D</span> <span class="o">*</span> <span class="n">z</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span>  <span class="c1"># try singularity which needs to be avoided</span>
+    <span class="n">z</span><span class="p">[</span><span class="n">singular</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># mock value to avoid errors</span>
+    <span class="n">rr</span> <span class="o">=</span> <span class="n">_signed_sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">z</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">gg</span> <span class="o">=</span> <span class="mf">4.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">_signed_sqrt</span><span class="p">(</span><span class="n">rr</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span> <span class="o">*</span> <span class="n">_signed_sqrt</span><span class="p">(</span><span class="n">rr</span> <span class="o">+</span> <span class="mi">3</span><span class="p">))</span>  <span class="c1"># eq (2.9)</span>
+    <span class="n">kk</span> <span class="o">=</span> <span class="n">_signed_sqrt</span><span class="p">(</span><span class="n">rr</span><span class="p">)</span> <span class="o">*</span> <span class="n">gg</span>  <span class="c1"># eq (2.11)</span>
+    <span class="n">mm</span> <span class="o">=</span> <span class="n">kk</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">_u_ellipk</span><span class="p">(</span><span class="n">mm</span><span class="p">))</span>
+    <span class="c1"># eqs (2.22) and eq (2.18), fix correct plane</span>
+    <span class="n">K</span><span class="p">[</span><span class="n">kk</span><span class="o">.</span><span class="n">imag</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">2</span><span class="n">j</span><span class="o">*</span><span class="n">_u_ellipk</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">mm</span><span class="p">[</span><span class="n">kk</span><span class="o">.</span><span class="n">imag</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="n">gf_z</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">D</span> <span class="o">*</span> <span class="n">gg</span> <span class="o">*</span> <span class="n">K</span>  <span class="c1"># eq (2.6)</span>
+    <span class="n">gf_z</span><span class="p">[</span><span class="n">singular</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">-</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">infty</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">advanced</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">gf_z</span><span class="p">),</span> <span class="n">gf_z</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>  <span class="c1"># return to advanced by symmetry</span></div>
+
+
+<div class="viewcode-block" id="dos"><a class="viewcode-back" href="../../../generated/gftool.lattice.triangular.dos.html#gftool.lattice.triangular.dos">[docs]</a><span class="k">def</span> <span class="nf">dos</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span> <span class="n">half_bandwidth</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;DOS of non-interacting 2D triangular lattice.</span>
+
+<span class="sd">    The DOS diverges at `-4/9*half_bandwidth`.</span>
+<span class="sd">    The DOS is evaluated as complete elliptic integral of first kind,</span>
+<span class="sd">    see [kogan2021]_.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    eps : float np.ndarray or float</span>
+<span class="sd">        DOS is evaluated at points `eps`.</span>
+<span class="sd">    half_bandwidth : float</span>
+<span class="sd">        Half-bandwidth of the DOS, DOS(| `eps` | &gt; `half_bandwidth`) = 0.</span>
+<span class="sd">        The `half_bandwidth` corresponds to the nearest neighbor hopping</span>
+<span class="sd">        :math:`t=4D/9`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dos : float np.ndarray or float</span>
+<span class="sd">        The value of the DOS.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [kogan2021] Kogan, E. and Gumbs, G. (2021) Green’s Functions and DOS for</span>
+<span class="sd">       Some 2D Lattices. Graphene, 10, 1-12.</span>
+<span class="sd">       https://doi.org/10.4236/graphene.2021.101001.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; eps = np.linspace(-1.5, 1.5, num=500)</span>
+<span class="sd">    &gt;&gt;&gt; dos = gt.lattice.triangular.dos(eps, half_bandwidth=1)</span>
+
+<span class="sd">    &gt;&gt;&gt; import matplotlib.pyplot as plt</span>
+<span class="sd">    &gt;&gt;&gt; _ = plt.plot(eps, dos)</span>
+<span class="sd">    &gt;&gt;&gt; _ = plt.axvline(-2/3, color=&#39;black&#39;, linewidth=0.8)</span>
+<span class="sd">    &gt;&gt;&gt; _ = plt.axvline(+4/3, color=&#39;black&#39;, linewidth=0.8)</span>
+<span class="sd">    &gt;&gt;&gt; _ = plt.xlabel(r&quot;$\epsilon/D$&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; _ = plt.ylabel(r&quot;DOS * $D$&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; _ = plt.axvline(0, color=&#39;black&#39;, linewidth=0.8)</span>
+<span class="sd">    &gt;&gt;&gt; _ = plt.ylim(bottom=0)</span>
+<span class="sd">    &gt;&gt;&gt; _ = plt.xlim(left=eps.min(), right=eps.max())</span>
+<span class="sd">    &gt;&gt;&gt; plt.show()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># FIXME: DOS at lower band-edge is somewhat undetermined</span>
+    <span class="c1"># using gf_z(-1.5*4/9D, D) and gf_z(-1.5*4/9D-1e-100j, D) gives different results</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">half_bandwidth</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">/</span> <span class="mi">9</span>
+    <span class="n">eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">D</span> <span class="o">*</span> <span class="n">eps</span><span class="p">)</span>
+    <span class="n">dos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">eps</span><span class="p">)</span>
+    <span class="n">region1</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.5</span> <span class="o">&lt;=</span> <span class="n">eps</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">eps</span> <span class="o">&lt;=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">rr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">eps</span><span class="p">[</span><span class="n">region1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">z0</span> <span class="o">=</span> <span class="p">(</span><span class="n">rr</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span> <span class="o">*</span> <span class="p">(</span><span class="mi">3</span> <span class="o">-</span> <span class="n">rr</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span>
+    <span class="n">z1</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">rr</span>
+    <span class="n">dos</span><span class="p">[</span><span class="n">region1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">z0</span><span class="p">)</span> <span class="o">*</span> <span class="n">ellipk</span><span class="p">(</span><span class="n">z1</span><span class="o">/</span><span class="n">z0</span><span class="p">)</span>
+    <span class="n">region2</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">eps</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">eps</span> <span class="o">&lt;=</span> <span class="o">+</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">rr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">eps</span><span class="p">[</span><span class="n">region2</span><span class="p">]</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">z0</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">rr</span>
+    <span class="n">z1</span> <span class="o">=</span> <span class="p">(</span><span class="n">rr</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span> <span class="o">*</span> <span class="p">(</span><span class="mi">3</span> <span class="o">-</span> <span class="n">rr</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span>
+    <span class="n">dos</span><span class="p">[</span><span class="n">region2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">z0</span><span class="p">)</span> <span class="o">*</span> <span class="n">ellipk</span><span class="p">(</span><span class="n">z1</span><span class="o">/</span><span class="n">z0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">D</span> <span class="o">*</span> <span class="n">dos</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019, Weh Andreas.
+      <span class="lastupdated">
+        Last updated on 2021-08-03.
+      </span>
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,6 @@
+gftool.matsubara\_frequencies\_b
+================================
+
+.. currentmodule:: gftool
+
+.. autofunction:: matsubara_frequencies_b

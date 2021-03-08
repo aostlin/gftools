@@ -1,0 +1,6 @@
+gftool.chemical\_potential
+==========================
+
+.. currentmodule:: gftool
+
+.. autofunction:: chemical_potential

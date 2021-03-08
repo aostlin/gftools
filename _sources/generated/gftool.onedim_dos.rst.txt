@@ -1,0 +1,6 @@
+gftool.onedim\_dos
+==================
+
+.. currentmodule:: gftool
+
+.. autofunction:: onedim_dos

@@ -1,0 +1,6 @@
+gftool.onedim\_gf\_z
+====================
+
+.. currentmodule:: gftool
+
+.. autofunction:: onedim_gf_z

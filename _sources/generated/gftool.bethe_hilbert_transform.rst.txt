@@ -1,0 +1,6 @@
+gftool.bethe\_hilbert\_transform
+================================
+
+.. currentmodule:: gftool
+
+.. autofunction:: bethe_hilbert_transform

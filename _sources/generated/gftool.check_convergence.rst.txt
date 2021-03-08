@@ -1,0 +1,6 @@
+gftool.check\_convergence
+=========================
+
+.. currentmodule:: gftool
+
+.. autofunction:: check_convergence

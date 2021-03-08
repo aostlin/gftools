@@ -1,0 +1,6 @@
+gftool.bethe\_dos\_moment
+=========================
+
+.. currentmodule:: gftool
+
+.. autofunction:: bethe_dos_moment

@@ -1,0 +1,6 @@
+gftool.bethe\_gf\_d2\_z
+=======================
+
+.. currentmodule:: gftool
+
+.. autofunction:: bethe_gf_d2_z

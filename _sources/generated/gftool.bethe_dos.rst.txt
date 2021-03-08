@@ -1,0 +1,6 @@
+gftool.bethe\_dos
+=================
+
+.. currentmodule:: gftool
+
+.. autofunction:: bethe_dos

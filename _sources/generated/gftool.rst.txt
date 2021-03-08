@@ -1,0 +1,78 @@
+﻿gftool
+======
+
+.. module:: gftool
+
+.. automodule:: gftool
+   :noindex:
+
+API
+---
+
+.. 
+.. .. inheritance-diagram:: gftool
+..    :parts: 1
+
+
+
+
+
+.. rubric:: Functions
+
+.. autosummary::
+  :toctree:
+
+  bethe_dos
+  bethe_dos_moment
+  bethe_gf_d1_z
+  bethe_gf_d2_z
+  bethe_gf_z
+  bethe_hilbert_transform
+  bose_fct
+  check_convergence
+  chemical_potential
+  density
+  density_error
+  density_error2
+  density_iw
+  fermi_fct
+  fermi_fct_d1
+  fermi_fct_inv
+  get_versions
+  hubbard_I_self_z
+  hubbard_dimer_gf_z
+  matsubara_frequencies
+  matsubara_frequencies_b
+  onedim_dos
+  onedim_dos_moment
+  onedim_gf_z
+  onedim_hilbert_transform
+  pade_frequencies
+  pole_gf_d1_z
+  pole_gf_moments
+  pole_gf_ret_t
+  pole_gf_tau
+  pole_gf_tau_b
+  pole_gf_z
+  square_dos
+  square_dos_moment
+  square_gf_z
+  square_hilbert_transform
+  surface_gf_zeps
+
+
+
+
+
+
+.. rubric:: Classes
+
+.. autosummary::
+  :toctree:
+
+  Result
+
+
+
+
+
